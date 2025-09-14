@@ -21,4 +21,17 @@ public class Tests : PageTest
         await formButton.ClickAsync();
         await Expect(Page).ToHaveURLAsync(new Regex(".*Home/Form"));
     }
+
+    [Test]
+    public async Task Filling_And_Submitting_ContactForm_Goes_To_SuccessPage()
+    {
+        await Page.GotoAsync($"{webAppUrl}/Home/Form");
+        await Page.Locator("text=First name").FillAsync("");
+        await Page.Locator("text=Last name").FillAsync("Campos");
+        await Page.Locator("text=Email address").FillAsync("nestor@gmail.com");
+        await Page.Locator("text=Birth date").FillAsync("1989-03-16");
+        await Page.Locator("text=Send").ClickAsync();
+        await Expect(Page).ToHaveURLAsync(new Regex(".*Home/Success"));
+    }
+
 }
