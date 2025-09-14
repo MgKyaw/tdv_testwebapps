@@ -1,15 +1,15 @@
-﻿namespace ContactForm.Tests;
+﻿using Microsoft.Playwright.NUnit;
+using System.Text.RegularExpressions;
 
-public class Tests
+[Parallelizable(ParallelScope.Self)]
+public class Tests : PageTest
 {
-    [SetUp]
-    public void Setup()
-    {
-    }
-
     [Test]
-    public void Test1()
+    public async Task Clicking_ContactButton_Goes_To_ContactForm()
     {
-        Assert.Pass();
+        await Page.GotoAsync("<URL>");
+        var formButton = Page.Locator("text=Open Contact Form");
+        await formButton.ClickAsync();
+        await Expect(Page).ToHaveURLAsync(new Regex(".*Home/Form"));
     }
 }
