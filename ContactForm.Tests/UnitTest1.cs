@@ -1,4 +1,5 @@
-﻿using Microsoft.Playwright.NUnit;
+﻿using Microsoft.Playwright;
+using Microsoft.Playwright.NUnit;
 using System.Text.RegularExpressions;
 
 [Parallelizable(ParallelScope.Self)]
@@ -32,6 +33,21 @@ public class Tests : PageTest
         await Page.Locator("text=Birth date").FillAsync("1989-03-16");
         await Page.Locator("text=Send").ClickAsync();
         await Expect(Page).ToHaveURLAsync(new Regex(".*Home/Success"));
+    }
+
+    [Test]
+    public async Task Filling_Invalid_Email_Should_Show_ValidationError()
+    {
+        await Page.GotoAsync($"{webAppUrl}/Home/Form");
+
+        ILocator emailValidationLocator = Page.Locator("text=The Email address field is not a valid e-mail address.");
+        await Expect(emailValidationLocator).Not.ToBeVisibleAsync();
+
+        await Page.Locator("text=Email address").FillAsync("nestorgmail.com");
+        await Page.Locator("text=Send").ClickAsync();
+
+        await Expect(Page).ToHaveURLAsync(new Regex(".*Home/Form"));
+        await Expect(emailValidationLocator).ToBeVisibleAsync();
     }
 
 }
